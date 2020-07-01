@@ -52,9 +52,9 @@ if test "$stuff" = "alias"; then
   echo "alias switch=kubectx"
   echo "alias g=git"
   } >>.zshrc
-  printf "k = kubectl"
-  printf "kn = kubens - byta namespace i klustret"
-  printf "swtich = kubectx - byta context (cluster) att köra kubectl mot"
-  printf "g = git"
+  printf "k = kubectl \n"
+  printf "kn = kubens - byta namespace i klustret \n"
+  printf "swtich = kubectx - byta context (cluster) att köra kubectl mot \n"
+  printf "g = git \n"
   printf "Starta om fönstret! eller kör source .zshrc"
 fi

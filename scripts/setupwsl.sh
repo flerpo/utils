@@ -38,7 +38,7 @@ if test "$stuff" = "tools"; then
   sudo git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/custom/themes/powerlevel10k
   printf "Set powerlevel theme \n\n"
   cd ~
-  sed -i 's/robbyrussel/powerlevel10k\/powerlevel10k/g' .zshrc
+  sed -i 's/robbyrussell/powerlevel10k\/powerlevel10k/g' .zshrc
   printf "Glöm inte att ändra font för ubuntu!"
   printf "Starta om fönstret!"
 fi

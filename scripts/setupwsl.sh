@@ -1,64 +1,64 @@
-##!/bin/bash
+#!/bin/bash
+
 echo "Enter desired setup:"
-echo "start - for basic setup (wget, curl, git and zsh, sets zsh as default shell"
-echo "tools - for great tools like kubectl, kubens, kubectx:"
-echo "alias - for aliases k, kn, switch, g:"
-read -p "Enter what to do: " stuff
+echo "1. start - Basic setup (wget, curl, git, zsh, set zsh as default shell)"
+echo "2. prettify - Downloading fonts and setting powerlevel10k theme"
+echo "3. tools - Install tools like kubectl, kubens, kubectx"
+echo "4. alias - Set aliases k, kn, switch, g"
+read -p "Enter what to do [1-4]: " choice
 
-if test "$stuff" = "start"; then
-  echo "Installing wget, curl and git\n\n\n"
-  sudo apt install wget curl git zsh -y
-  "Set zsh as default shell for logged in user, prompts for password!"
-  chsh -s $(which zsh)
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+case $choice in
+  1)
+    echo "Installing wget, curl, git, and zsh..."
+    sudo apt install wget curl git zsh -y
+    echo "Setting zsh as default shell (password prompt may appear)"
+    chsh -s $(which zsh)
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+    ;;
 
-fi
+  2)
+    echo "Making stuff pretty..."
+    mkdir -p ~/Downloads/fonts
+    cd ~/Downloads/fonts
+    wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf
+    wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf
+    wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf
+    wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf
 
-if test "$stuff" = "tools"; then
-  printf "Installing tools\n"
-  printf "Installing kubens and kubectx\n\n"
-  sudo git clone https://github.com/ahmetb/kubectx /opt/kubectx
-  sudo ln -s /opt/kubectx/kubectx /usr/local/bin/kubectx
-  sudo ln -s /opt/kubectx/kubens /usr/local/bin/kubens
+    sudo git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/custom/themes/powerlevel10k
+    sed -i 's/robbyrussell/powerlevel10k\/powerlevel10k/g' ~/.zshrc
+    echo "Remember to change the font for Ubuntu terminal!"
+    echo "Restart the terminal window!"
+    ;;
   
-  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-  chmod +x kubectl
-  sudo mv kubectl /usr/local/bin
+  3)
+    echo "Installing tools..."
+    sudo git clone https://github.com/ahmetb/kubectx /opt/kubectx
+    sudo ln -sf /opt/kubectx/kubectx /usr/local/bin/kubectx
+    sudo ln -sf /opt/kubectx/kubens /usr/local/bin/kubens
 
-  printf "Fixing autocompletes\n\n"
-  mkdir -p ~/.oh-my-zsh/completions
-  chmod -R 755 ~/.oh-my-zsh/completions
-  ln -s /opt/kubectx/completion/kubectx.zsh ~/.oh-my-zsh/completions/_kubectx.zsh
-  ln -s /opt/kubectx/completion/kubens.zsh ~/.oh-my-zsh/completions/_kubens.zsh
+    kubectl_url=$(curl -L -s https://dl.k8s.io/release/stable.txt)
+    curl -LO "https://dl.k8s.io/release/$kubectl_url/bin/linux/amd64/kubectl"
+    chmod +x kubectl
+    sudo mv kubectl /usr/local/bin
 
-  printf "Making things pretty...\n\n"
-  mkdir ~/Downloads
-  cd ~/Downloads
-  wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf
-  wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf
-  wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf
-  wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf
+    mkdir -p ~/.oh-my-zsh/completions
+    chmod -R 755 ~/.oh-my-zsh/completions
+    ln -sf /opt/kubectx/completion/kubectx.zsh ~/.oh-my-zsh/completions/_kubectx.zsh
+    ln -sf /opt/kubectx/completion/kubens.zsh ~/.oh-my-zsh/completions/_kubens.zsh
+    ;;  
+  4)
+    {
+    echo "alias k=kubectl"
+    echo "alias kn=kubens"
+    echo "alias switch=kubectx"
+    echo "alias g=git"
+    } >> ~/.zshrc
+    echo "Aliases set. Restart the terminal or run 'source ~/.zshrc'"
+    ;;
 
-  sudo git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/custom/themes/powerlevel10k
-  printf "Set powerlevel theme \n\n"
-  cd ~
-  sed -i 's/robbyrussell/powerlevel10k\/powerlevel10k/g' .zshrc
-  printf "Glöm inte att ändra font för ubuntu!"
-  printf "Starta om fönstret!"
-fi
-if test "$stuff" = "alias"; then
-  cd ~
-
-  {
-
-  echo "alias k=kubectl"
-  echo "alias kn=kubens"
-  echo "alias switch=kubectx"
-  echo "alias g=git"
-  } >>.zshrc
-  printf "k = kubectl \n"
-  printf "kn = kubens - byta namespace i klustret \n"
-  printf "swtich = kubectx - byta context (cluster) att köra kubectl mot \n"
-  printf "g = git \n"
-  printf "Starta om fönstret! eller kör source .zshrc"
-fi
+  *)
+    echo "Invalid choice. Exiting."
+    exit 1
+    ;;
+esac

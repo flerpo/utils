@@ -9,8 +9,8 @@ read -p "Enter what to do [1-4]: " choice
 
 case $choice in
   1)
-    echo "Installing wget, curl, git, and zsh..."
-    sudo apt install wget curl git zsh -y
+    echo "Installing wget, curl, git, fzf and zsh..."
+    sudo apt install wget curl git zsh fzf -y
     echo "Setting zsh as default shell (password prompt may appear)"
     chsh -s $(which zsh)
     mkdir -p ~/Downloads/fonts
@@ -29,46 +29,66 @@ case $choice in
     mv ~/.zshrc ~/.zshrc.bak
     touch ~/.zshrc
 
-    {
-    echo "ZINIT_HOME='${XDH_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git'"
-    echo "if [ ! -d \"\$ZINIT_HOME\" ]; then"
-    echo "mkdir -p \"\$(dirname \$ZINIT_HOME)\""
-    echo "git clone https://github.com/zdharma-continuum/zinit.git '$ZINIT_HOME'"
+{
+    # Set ZINIT_HOME path
+    echo "# Set ZINIT_HOME path"
+    ZINIT_HOME="${XDH_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+    echo "ZINIT_HOME='$ZINIT_HOME'"
+
+    # Check if ZINIT_HOME directory exists, if not, create it and clone the repository
+    echo ""
+    echo "# Check if ZINIT_HOME directory exists, if not, create it and clone the repository"
+    echo "if [ ! -d \"$ZINIT_HOME\" ]; then"
+    echo "  mkdir -p \"\$(dirname \$ZINIT_HOME)\""
+    echo "  git clone https://github.com/zdharma-continuum/zinit.git '$ZINIT_HOME'"
     echo "fi"
+    echo ""
 
-    echo "source \${ZINIT_HOME}/zinit.zsh "
+    # Source Zinit and add plugins
+    echo "# Source Zinit and add plugins"
+    echo "source \${ZINIT_HOME}/zinit.zsh"
+    echo ""
     echo "zinit ice depth=1; zinit light romkatv/powerlevel10k"
-
     echo "zinit light zsh-users/zsh-syntax-highlighting"
     echo "zinit light zsh-users/zsh-completions"
     echo "zinit light zsh-users/zsh-autosuggestions"
+    echo "zinit light Aloxaf/fzf-tab"
     echo "zinit snippet OMZP::git"
     echo "zinit snippet OMZP::sudo"
     echo "zinit snippet OMZP::kubectl"
     echo "zinit snippet OMZP::kubectx"
     echo "zinit snippet OMZP::command-not-found"
+    echo ""
 
-
+    # Initialize completion system
+    echo "# Initialize completion system"
     echo "autoload -U compinit && compinit"
+    echo ""
 
+    # Load plugins and commands
+    echo "# Load plugins and commands"
     echo "zinit cdreplay -q"
+    echo ""
 
-    echo "HISTSIZE=5000" 
-    echo "HISTFILE=~/.zsh_history" 
-    echo "SAVEHIST=$HISTSIZE" 
-    echo "HISTDUP=erase" 
-    echo "setopt appendhistory" 
-    echo "setopt sharehistory" 
-    echo "setopt hist_ignore_space" 
-    echo "setopt hist_ignore_all_dups" 
-    echo "setopt hist_save_no_dups" 
-    echo "setopt hist_ignore_dups" 
+    # Configure history settings
+    echo "# Configure history settings"
+    echo "HISTSIZE=5000"
+    echo "HISTFILE=~/.zsh_history"
+    echo "SAVEHIST=\$HISTSIZE"
+    echo "HISTDUP=erase"
+    echo "setopt appendhistory"
+    echo "setopt sharehistory"
+    echo "setopt hist_ignore_space"
+    echo "setopt hist_ignore_all_dups"
+    echo "setopt hist_save_no_dups"
+    echo "setopt hist_ignore_dups"
     echo "setopt hist_find_no_dups"
+    echo ""
 
-    
-    echo "alias ls=ls --color"
-
-    } >> ~/.zshrc
+    # Define aliases
+    echo "# Define aliases"
+    echo "alias ls='ls --color'"
+} >> ~/.zshrc
     
     sed -i 's/robbyrussell/powerlevel10k\/powerlevel10k/g' ~/.zshrc
     echo "Remember to change the font for Ubuntu terminal!"
@@ -85,16 +105,13 @@ case $choice in
     curl -LO "https://dl.k8s.io/release/$kubectl_url/bin/linux/amd64/kubectl"
     chmod +x kubectl
     sudo mv kubectl /usr/local/bin
-    
-    ;;  
-  4)
     {
-    echo "alias kn=kubens"
-    echo "alias switch=kubectx"
+      echo "alias kn=kubens"
+      echo "alias switch=kubectx"
     } >> ~/.zshrc
+    
     echo "Aliases set. Restart the terminal or run 'source ~/.zshrc'"
     ;;
-
   *)
     echo "Invalid choice. Exiting."
     exit 1

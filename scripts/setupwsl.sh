@@ -4,7 +4,6 @@ echo "Enter desired setup:"
 echo "1. start - Basic setup (wget, curl, git, zsh, set zsh as default shell)"
 echo "2. prettify - Downloading fonts and setting powerlevel10k theme"
 echo "3. tools - Install tools like kubectl, kubens, kubectx"
-echo "4. alias - Set aliases k, kn, switch, g"
 read -p "Enter what to do [1-4]: " choice
 
 case $choice in

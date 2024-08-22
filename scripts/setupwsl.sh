@@ -109,7 +109,8 @@ case $choice in
       echo "alias kn=kubens"
       echo "alias switch=kubectx"
     } >> ~/.zshrc
-    
+   
+
     echo "Aliases set. Restart the terminal or run 'source ~/.zshrc'"
     ;;
   *)

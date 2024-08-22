@@ -25,7 +25,6 @@ case $choice in
   2)
     echo "Making stuff pretty..."
 
-
     mv ~/.zshrc ~/.zshrc.bak
     touch ~/.zshrc
 

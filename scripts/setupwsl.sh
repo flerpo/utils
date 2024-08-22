@@ -9,6 +9,8 @@ read -p "Enter what to do [1-4]: " choice
 
 case $choice in
   1)
+    echo "Updating packages.."
+    sudo apt update
     echo "Installing wget, curl, git, fzf and zsh..."
     sudo apt install wget curl git zsh fzf -y
     echo "Setting zsh as default shell (password prompt may appear)"

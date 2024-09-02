@@ -2,8 +2,8 @@
 
 echo "Enter desired setup:"
 echo "1. start - Basic setup (wget, curl, git, zsh, set zsh as default shell)"
-echo "2. prettify - Downloading fonts and setting powerlevel10k theme"
-echo "3. tools - Install tools like kubectl, kubens, kubectx"
+echo "2. prettify - Setting theme and installing nice stuff"
+echo "3. tools - Install tools like kubectl, kubens, kubectx, nvm"
 read -p "Enter what to do [1-4]: " choice
 
 case $choice in
@@ -90,6 +90,8 @@ case $choice in
 } >> ~/.zshrc
     
     sed -i 's/robbyrussell/powerlevel10k\/powerlevel10k/g' ~/.zshrc
+    source ~/.zshrc
+
     echo "Remember to change the font for Ubuntu terminal!"
     echo "Restart the terminal window!"
     ;;
@@ -108,9 +110,11 @@ case $choice in
       echo "alias kn=kubens"
       echo "alias switch=kubectx"
     } >> ~/.zshrc
-   
 
-    echo "Aliases set. Restart the terminal or run 'source ~/.zshrc'"
+    echo "Installing nvm"
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+    source ~/.zshrc
+
     ;;
   *)
     echo "Invalid choice. Exiting."
